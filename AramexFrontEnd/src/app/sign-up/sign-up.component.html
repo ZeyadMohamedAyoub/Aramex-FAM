@@ -1,0 +1,95 @@
+<main class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="col-12 col-md-6 col-lg-4 mx-auto">
+    <div *ngIf="isSignedUp" class="alert alert-success" role="alert">
+      Sign-up successful! Welcome!
+    </div>
+
+    <div *ngIf="errorMsg" class="alert alert-danger" role="alert">
+      {{ errorMsg }}
+    </div>
+    <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+      <img
+        class="mb-4 d-block mx-auto"
+        src="https://iconape.com/wp-content/files/mw/373764/svg/373764.png"
+        alt=""
+        width="72"
+        height="57"
+      />
+      <h2 class="h3 mb-3 fw-normal text-center">Sign Up</h2>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="name"
+          name="username"
+          type="text"
+          id="username"
+          class="form-control"
+          placeholder="UserName"
+          required
+          #inputname="ngModel"
+        />
+        <label for="username">UserName</label>
+        <div *ngIf="inputname.invalid" class="text-danger text-center">
+          *Username is required*
+        </div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="email"
+          type="email"
+          name="email"
+          class="form-control"
+          placeholder="Enter your email"
+          required
+          #inputemail="ngModel"
+        />
+        <label for="email">Email Address</label>
+        <div *ngIf="inputemail.invalid" class="text-danger text-center">
+          *Email is required*
+        </div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          class="form-control"
+          placeholder="Enter Your Password"
+          required
+          #inputpass="ngModel"
+        />
+        <label for="password">Password</label>
+        <div *ngIf="inputpass.invalid" class="text-danger text-center">
+          *Password is required*
+        </div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="phone_number"
+          type="tel"
+          name="phoneNumber"
+          class="form-control"
+          placeholder="Your Phone Number"
+          required
+          #phoneinput="ngModel"
+        />
+        <label for="phoneNumber">Phone Number</label>
+        <div *ngIf="phoneinput.invalid" class="text-danger text-center">
+          *PhoneNumber is required*
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 py-2" type="submit">Sign Up</button>
+    </form>
+
+    <nav class="mt-3 text-center">
+      Already have an account? <a routerLink="/login">Login</a>
+    </nav>
+    <footer class="mt-auto text-center">
+      <p class="mt-5 mb-3 text-body-secondary">©2024</p>
+    </footer>
+  </div>
+</main>
