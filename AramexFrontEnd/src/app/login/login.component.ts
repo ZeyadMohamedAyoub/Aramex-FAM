@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../user.service'; // Import the service
+
 
 @Component({
   selector: 'app-login',
@@ -16,8 +18,10 @@ export class LoginComponent {
   name: string = '';
   password: string = '';
   isloggedIn: boolean = false;
+  errorMsg: string = ''; //added a error mesg
 
-  constructor(private http: HttpClient) {}
+  //injected the userService
+  constructor(private http: HttpClient, private userService: UserService) {}
 
   ////////////////function that sends data to the HTTP /////////////////
   sendDataToServer(name: string, password: string): Observable<any> {
@@ -35,7 +39,6 @@ export class LoginComponent {
     });
   }
 
-  errorMsg: string = '';
   //////// function for the click button ////////////
   onSubmit() {
     const userData = {
@@ -51,6 +54,7 @@ export class LoginComponent {
           this.isloggedIn = true;
           console.log('Logged in successfully!', response);
           this.errorMsg = '';
+          this.userService.setUsername(this.name); //to store the userName
         } else {
           console.error('Invalid username or password');
           this.errorMsg = 'Invalid UserName or Password';

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { NgForm, FormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { UserService } from '../../user.service';
 
 @Component({
   selector: 'app-create-order',
@@ -19,7 +20,8 @@ export class CreateOrderComponent {
   isOrderCreated: boolean = false;
   errorMsg: string = '';
 
-  constructor(private http: HttpClient) {}
+  //injected the userService
+  constructor(private http: HttpClient ,private userService: UserService) {}
 
   // Function to send data to the server
   sendDataToServer(orderData: any) {
@@ -34,11 +36,13 @@ export class CreateOrderComponent {
   // if error then send order failed prompt to try again
   onSubmit(orderForm: NgForm) {
     if (orderForm.valid) {
+      //which will be sent to the backend 
       const orderData = {
         pickupLocation: this.pickupLocation,
         dropoffLocation: this.dropoffLocation,
         packageDetails: this.packageDetails,
         deliveryTime: this.deliveryTime,
+        userOwner: this.userService.getUsername() //to retrieve and send the username
       };
       
       // Resetting status messages
