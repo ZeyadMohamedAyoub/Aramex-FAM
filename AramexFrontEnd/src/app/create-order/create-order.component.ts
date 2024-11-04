@@ -13,11 +13,12 @@ import { UserService } from '../../user.service';
   styleUrls: ['./create-order.component.css']
 })
 export class CreateOrderComponent {
-  pickupLocation: string = '';
-  dropoffLocation: string = '';
+  pickUp_Location: string = '';
+  dropOff_Location: string = '';
   packageDetails: string = '';
   deliveryTime: string = '';
   isOrderCreated: boolean = false;
+  // status: string = '';
   errorMsg: string = '';
 
   //injected the userService
@@ -25,7 +26,7 @@ export class CreateOrderComponent {
 
   // Function to send data to the server
   sendDataToServer(orderData: any) {
-    const url = 'http://127.0.0.1:8000/orders';
+    const url = 'http://127.0.0.1:8000/postOrder';
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post<HttpResponse<any>>(url, orderData, { headers, observe: 'response' });
@@ -38,11 +39,12 @@ export class CreateOrderComponent {
     if (orderForm.valid) {
       //which will be sent to the backend 
       const orderData = {
-        pickupLocation: this.pickupLocation,
-        dropoffLocation: this.dropoffLocation,
+        pickUp_Location: this.pickUp_Location,
+        dropOff_Location: this.dropOff_Location,
         packageDetails: this.packageDetails,
+        status: 'pending', // Set initial status to "pending"
         deliveryTime: this.deliveryTime,
-        userOwner: this.userService.getUsername() //to retrieve and send the username
+        userOwner: this.userService.getUsername(), //to retrieve and send the username
       };
       
       // Resetting status messages
