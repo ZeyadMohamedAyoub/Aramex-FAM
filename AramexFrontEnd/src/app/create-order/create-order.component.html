@@ -1,0 +1,90 @@
+<main class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="col-12 col-md-6 col-lg-4 mx-auto">
+    <div *ngIf="isOrderCreated" class="alert alert-success" role="alert">
+      Order created successfully!
+    </div>
+
+    <div *ngIf="errorMsg" class="alert alert-danger" role="alert">
+      {{ errorMsg }}
+    </div>
+
+    <form #orderForm="ngForm" (ngSubmit)="onSubmit(orderForm)">
+      <h2 class="h3 mb-3 fw-normal text-center">Create Order</h2>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="pickupLocation"
+          name="pickupLocation"
+          type="text"
+          id="pickupLocation"
+          class="form-control"
+          placeholder="Pickup Location"
+          required
+          #inputPickup="ngModel"
+        />
+        <label for="pickupLocation">Pickup Location</label>
+        <div *ngIf="inputPickup.invalid" class="text-danger text-center">
+          *Pickup location is required*
+        </div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="dropoffLocation"
+          name="dropoffLocation"
+          type="text"
+          id="dropoffLocation"
+          class="form-control"
+          placeholder="Drop-off Location"
+          required
+          #inputDropoff="ngModel"
+        />
+        <label for="dropoffLocation">Drop-off Location</label>
+        <div *ngIf="inputDropoff.invalid" class="text-danger text-center">
+          *Drop-off location is required*
+        </div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="packageDetails"
+          name="packageDetails"
+          type="text"
+          id="packageDetails"
+          class="form-control"
+          placeholder="Package Details"
+          required
+          #inputPackage="ngModel"
+        />
+        <label for="packageDetails">Package Details</label>
+        <div *ngIf="inputPackage.invalid" class="text-danger text-center">
+          *Package details are required*
+        </div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input
+          [(ngModel)]="deliveryTime"
+          name="deliveryTime"
+          type="datetime-local"
+          id="deliveryTime"
+          class="form-control"
+          required
+          #inputTime="ngModel"
+        />
+        <label for="deliveryTime">Delivery Time</label>
+        <div *ngIf="inputTime.invalid" class="text-danger text-center">
+          *Delivery time is required*
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 py-2" type="submit">
+        Create Order
+      </button>
+    </form>
+
+    <footer class="mt-auto text-center">
+      <p class="mt-5 mb-3 text-body-secondary">©2024</p>
+    </footer>
+  </div>
+</main>
