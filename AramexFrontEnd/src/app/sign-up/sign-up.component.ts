@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -16,10 +17,11 @@ export class SignUpComponent {
   email: string = '';
   password: string = '';
   phone_number: string = '';
+  role: string = ''; //adding role attribute
   isSignedUp: boolean = false;
   errorMsg: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ////////////////function that sends data to the HTTP /////////////////
   sendDataToServer(userData: any): Observable<any> {
@@ -37,9 +39,13 @@ export class SignUpComponent {
         email: this.email,
         password: this.password,
         phone_number: this.phone_number,
+        role: this.role,
       };
       this.isSignedUp = true;
 
+      if (this.isSignedUp) {
+        this.router.navigate(['/user']);
+      }
       this.errorMsg = ''; ///////reset the previous err msg
 
       this.sendDataToServer(userData).subscribe({
