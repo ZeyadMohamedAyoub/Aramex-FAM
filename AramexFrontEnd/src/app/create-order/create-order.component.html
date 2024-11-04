@@ -13,16 +13,16 @@
 
       <div class="form-floating mb-3">
         <input
-          [(ngModel)]="pickupLocation"
-          name="pickupLocation"
+          [(ngModel)]="pickUp_Location"
+          name="pickUp_Location"
           type="text"
-          id="pickupLocation"
+          id="pickUp_Location"
           class="form-control"
           placeholder="Pickup Location"
           required
           #inputPickup="ngModel"
         />
-        <label for="pickupLocation">Pickup Location</label>
+        <label for="pickUp_Location">Pickup Location</label>
         <div *ngIf="inputPickup.invalid" class="text-danger text-center">
           *Pickup location is required*
         </div>
@@ -30,16 +30,16 @@
 
       <div class="form-floating mb-3">
         <input
-          [(ngModel)]="dropoffLocation"
-          name="dropoffLocation"
+          [(ngModel)]="dropOff_Location"
+          name="dropOff_Location"
           type="text"
-          id="dropoffLocation"
+          id="dropOff_Location"
           class="form-control"
           placeholder="Drop-off Location"
           required
           #inputDropoff="ngModel"
         />
-        <label for="dropoffLocation">Drop-off Location</label>
+        <label for="dropOff_Location">Drop-off Location</label>
         <div *ngIf="inputDropoff.invalid" class="text-danger text-center">
           *Drop-off location is required*
         </div>
