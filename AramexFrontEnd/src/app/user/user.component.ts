@@ -14,4 +14,8 @@ export class UserComponent {
   ToCreateOrderComponent() {
     this.router.navigate(['/create-order']);
   }
+
+  ToUserOrders() {
+    this.router.navigate(['/orders']);
+  }
 }
