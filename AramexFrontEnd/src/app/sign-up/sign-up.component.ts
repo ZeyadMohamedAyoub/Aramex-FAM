@@ -5,6 +5,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { UserService } from '../../user.service';
+
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -21,7 +23,7 @@ export class SignUpComponent {
   isSignedUp: boolean = false;
   errorMsg: string = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private userService: UserService) {}
 
   ////////////////function that sends data to the HTTP /////////////////
   sendDataToServer(userData: any): Observable<any> {
@@ -54,6 +56,7 @@ export class SignUpComponent {
           this.isSignedUp = true;
           this.errorMsg = '';
           console.log('SignUp successfully', userData);
+          this.userService.setUsername(this.name);
         },
         error: (error) => {
           console.error('Error occurred:', error);
