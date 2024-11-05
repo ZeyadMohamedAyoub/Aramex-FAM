@@ -1,0 +1,38 @@
+<main class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="col-12 col-md-8 col-lg-6 mx-auto">
+    <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+    <div *ngIf="successMsg" class="alert alert-success">{{ successMsg }}</div>
+
+    <h2 class="h3 mb-3 fw-normal text-center">Order Details</h2>
+    <div *ngIf="orderDetails">
+      <p><strong>Order ID:</strong> {{ orderDetails.id }}</p>
+      <p><strong>User Name:</strong> {{ orderDetails.userOwner }}</p>
+      <p><strong>Status:</strong> {{ orderDetails.status }}</p>
+      <p>
+        <strong>Pickup Location:</strong> {{ orderDetails.pickUp_Location }}
+      </p>
+      <!-- <p>
+        <strong>Drop-off Location:</strong> {{ orderDetails.dropOff_Location }}
+      </p> -->
+      <p><strong>Package Details:</strong> {{ orderDetails.packageDetails }}</p>
+      <p><strong>Delivery Time:</strong> {{ orderDetails.deliveryTime }}</p>
+      <p>
+        <strong>Courier Info:</strong> {{ orderDetails.courierInfo || "N/A" }}
+      </p>
+      <button
+        *ngIf="orderDetails.status === 'pending'"
+        class="btn btn-danger w-100 py-2 mt-3"
+        (click)="cancelOrder()"
+      >
+        Cancel Order
+      </button>
+      <button
+        *ngIf="orderDetails.status !== 'pending'"
+        class="btn btn-secondary w-100 py-2 mt-3"
+        disabled
+      >
+        Cannot Cancel
+      </button>
+    </div>
+  </div>
+</main>
