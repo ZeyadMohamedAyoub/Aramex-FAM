@@ -1,0 +1,14 @@
+<div class="assigned-orders">
+  <h2>Assigned Orders</h2>
+  <ul *ngIf="assignedOrders.length > 0; else noOrders">
+    <li *ngFor="let order of assignedOrders">
+      <p>Order ID: {{ order._id }}</p>
+      <p>Status: {{ order.status }}</p>
+      <button (click)="acceptOrder(order._id)">Accept</button>
+      <button (click)="declineOrder(order._id)">Decline</button>
+    </li>
+  </ul>
+  <ng-template #noOrders>
+    <p>No assigned orders.</p>
+  </ng-template>
+</div>
