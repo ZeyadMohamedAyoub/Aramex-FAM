@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class UserService {
   constructor() {}
 
+  //private userId: string
   private userOwner: string = '';
   private role: string = '';
 

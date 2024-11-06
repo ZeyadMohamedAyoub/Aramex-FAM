@@ -37,6 +37,20 @@ async def getOrders():
         raise HTTPException(status_code=500, detail="An error occurred while fetching orders.")
 
 
+
+@router.get("/orders/{orderId}")
+async def getOrders(orderId:str):
+    try:
+        order_id=ObjectId(orderId)
+        order = collection_name_2.find_one({"_id": order_id})
+        order["_id"] = str(order["_id"])
+        return order
+    except Exception as e:
+        
+        print(f"Error occurred: {e}")
+        
+        raise HTTPException(status_code=500, detail="An error occurred while fetching orders.")
+
 @router.get("/getUserOrders")
 async def get_user_orders(username:str):
      try:
@@ -97,8 +111,7 @@ async def post_order(order: Order):
         )
         
         
-        if result.modified_count == 0:
-            raise HTTPException(status_code=500, detail="Failed to update user's order list")
+        
 
         return JSONResponse(status_code=201, content={"message": "Order created and added to user's order list successfully"})
     
@@ -126,6 +139,8 @@ async def authenticate_user(name: str = Form(...), password: str = Form(...)):
         
         '''if not bcrypt.checkpw(password.encode('utf-8'), found_user['password'].encode('utf-8')):
             raise HTTPException(status_code=401, detail="Invalid username or password")'''
+        
+        print(individual_serial(found_user))
         
         
         return {"user": individual_serial(found_user)}
@@ -246,6 +261,7 @@ async def delete_order(orderId: str):
         result = collection_name_2.delete_one({"_id": OrderID})
         
         
+        
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Order not found")
         
@@ -282,6 +298,25 @@ async def update_order_status_admin(id:str,orderId:str,status:str):
         
     return JSONResponse(status_code=201, content={"message": "Order status updated successfully"})
 
+
+
+@router.put("/updateOrderStatusUser/{orderId}/{status}")
+async def update_order_status_user(orderId:str,status:str):
+    order_Id=ObjectId(orderId)
+
+    
+    
+    found_order=collection_name_2.find_one({"_id":order_Id})
+    if found_order is None:
+            raise HTTPException(status_code=404, detail="Order not found")
+    
+    found_order["status"]=status
+    collection_name_2.update_one(
+            {"_id": order_Id},
+            {"$set": {"status": found_order["status"]}})
+        
+    return JSONResponse(status_code=201, content={"message": "Order status updated successfully"})    
+
     
     
 
@@ -291,4 +326,4 @@ async def update_order_status_admin(id:str,orderId:str,status:str):
     
    
 
-  
+    

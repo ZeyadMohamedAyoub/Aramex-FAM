@@ -20,6 +20,7 @@ export class SignUpComponent {
   password: string = '';
   phone_number: string = '';
   role: string = ''; //adding role attribute
+  orders: any[]=[];
   isSignedUp: boolean = false;
   errorMsg: string = '';
 
@@ -32,7 +33,7 @@ export class SignUpComponent {
   ////////////////function that sends data to the HTTP /////////////////
   sendDataToServer(userData: any): Observable<any> {
     console.log('Payload:', JSON.stringify(userData));
-    return this.http.post('http://127.0.0.1:8000/', userData, {
+    return this.http.post('http://127.0.0.1:8000/postUser', userData, {
       headers: { 'Content-Type': 'application/json' }, // transforming the data to json format
     }); // Sending POST request
   }
@@ -46,18 +47,11 @@ export class SignUpComponent {
         password: this.password,
         phone_number: this.phone_number,
         role: this.role,
+        orders: this.orders,
+        
       };
       this.isSignedUp = true;
 
-      if (this.isSignedUp) {
-        if (this.role === 'User') {
-          this.router.navigate(['/user']);
-        } else if (this.role === 'Admin') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/courier']);
-        }
-      }
       this.errorMsg = ''; ///////reset the previous err msg
 
       this.sendDataToServer(userData).subscribe({
@@ -68,9 +62,9 @@ export class SignUpComponent {
           console.log('SignUp successfully', userData);
           this.userService.setUsername(this.name);
 
-          if (this.role === 'User') {
+          if (this.role === 'user') {
             this.router.navigate(['/user']);
-          } else if (this.role === 'Admin') {
+          } else if (this.role === 'admin') {
             this.router.navigate(['/admin']);
           } else {
             this.router.navigate(['/courier']);
