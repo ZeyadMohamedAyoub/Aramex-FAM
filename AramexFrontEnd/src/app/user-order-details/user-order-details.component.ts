@@ -15,9 +15,10 @@ import { FormsModule } from '@angular/forms';
 export class UserOrderDetailsComponent {
   orderId: string = '';//send this order id to the server 
   orderDetails: any = null; //get orderDetails from the backend
+  orderStatus: string ='';
   errorMsg: string = '';
   successMsg: string = '';
-
+  
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -42,16 +43,19 @@ export class UserOrderDetailsComponent {
   //to cancel the order iff the order is pending
   cancelOrder() {
     if (this.orderDetails?.status !== 'pending') return;
-
-    this.http.post(`http://127.0.0.1:8000/orders/cancel`, { orderId: this.orderId }).subscribe({
+  
+    this.orderStatus='cancelled'
+    // Pass orderId as a query parameter
+    this.http.put(`http://127.0.0.1:8000/updateOrderStatusUser/${this.orderId}/${this.orderStatus}`,{}).subscribe({
       next: () => {
-        this.successMsg = 'Order canceled successfully.';
-        this.orderDetails.status = 'canceled';
+        this.successMsg = 'Order cancelled successfully.';
+        this.orderDetails.status = 'cancelled';
       },
       error: (error) => {
-        console.error('Error canceling order:', error);
+        console.error('Error cancelling order:', error);
         this.errorMsg = 'Failed to cancel the order. Please try again later.';
       },
     });
   }
+  
 }

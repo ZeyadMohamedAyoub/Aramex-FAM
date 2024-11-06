@@ -24,7 +24,7 @@ export class UserOrdersComponent implements OnInit {
 
   //function to fetch the order from the database
   fetchOrders() {
-    const url = `http://127.0.0.1:8000/getOrders?username=${this.userOwner}`;
+    const url = `http://127.0.0.1:8000/getUserOrders?username=${this.userOwner}`;
     this.http.get<any[]>(url).subscribe({
       next: (data) => {
         this.orders = data;

@@ -5,15 +5,15 @@
 
     <h2 class="h3 mb-3 fw-normal text-center">Order Details</h2>
     <div *ngIf="orderDetails">
-      <p><strong>Order ID:</strong> {{ orderDetails.id }}</p>
+      <p><strong>Order ID:</strong> {{ this.orderId }}</p>
       <p><strong>User Name:</strong> {{ orderDetails.userOwner }}</p>
       <p><strong>Status:</strong> {{ orderDetails.status }}</p>
       <p>
         <strong>Pickup Location:</strong> {{ orderDetails.pickUp_Location }}
       </p>
-      <!-- <p>
+       <p>
         <strong>Drop-off Location:</strong> {{ orderDetails.dropOff_Location }}
-      </p> -->
+      </p> 
       <p><strong>Package Details:</strong> {{ orderDetails.packageDetails }}</p>
       <p><strong>Delivery Time:</strong> {{ orderDetails.deliveryTime }}</p>
       <p>

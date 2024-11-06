@@ -6,7 +6,7 @@ def individual_serial(user)->dict:
         "password": user["password"],
         "phone_number": user["phone_number"],
         "role":user["role"],
-        "orders": user["orders"] if "orders" in user else []
+        "orders": user["orders"]
     }
 
 def individual_serial_order(order)->dict:
@@ -17,7 +17,8 @@ def individual_serial_order(order)->dict:
         "packageDetails": order["packageDetails"],
         "status": order["status"],
         "deliveryTime": order["deliveryTime"],
-        "userOwner": order["userOwner"]
+        "userOwner": order["userOwner"],
+        "courierId": order["courierId"]
     }
 
 

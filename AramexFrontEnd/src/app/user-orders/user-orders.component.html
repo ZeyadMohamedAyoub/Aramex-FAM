@@ -1,3 +1,10 @@
+<img
+  class="mb-4 d-block mx-auto"
+  src="https://iconape.com/wp-content/files/mw/373764/svg/373764.png"
+  alt=""
+  width="72"
+  height="57"
+/>
 <div class="container col-xl-10 col-xxl-8 px-4 py-5 mx-auto">
   <div class="row align-items-center g-lg-5 py-5">
     <div class="col-lg-7 text-center text-lg-start">
@@ -12,14 +19,15 @@
         <div class="list-group">
           <a
             *ngFor="let order of orders"
-            [routerLink]="['/orders', order.id]"
+            [routerLink]="['/order', order.id]"
             class="list-group-item list-group-item-action d-flex gap-3 py-3"
             aria-current="true"
           >
             <div class="d-flex gap-2 w-100 justify-content-between">
               <div>
-                <h5 class="mb-0">{{ order.id }}</h5>
-                <p class="mb-0">{{ order.status }}</p>
+                <h5 class="mb-0">OrderID: {{ order.id }}</h5>
+                <h6 class="mb-1">Status: {{ order.status }}</h6>
+                <p class="mb-1">Package details: {{order.packageDetails}}</p>
               </div>
             </div>
           </a>
