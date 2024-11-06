@@ -204,7 +204,7 @@ async def update_order_status(id:str,orderId:str,status:str):
 
     found_courier=collection_name.find_one({"_id":courier_id})
     if found_courier["role"]!="courier":
-        raise HTTPException(status_code=404, detail="Wrong role")
+        raise HTTPException(status_code=404, detail="Access Denied")
     
     if found_courier is None:
             raise HTTPException(status_code=404, detail="Courier not found")
@@ -259,4 +259,36 @@ async def delete_order(orderId: str):
 
 
                            
+@router.put("/updateOrderStatusAdmin")
+async def update_order_status_admin(id:str,orderId:str,status:str):
+    admin_id=ObjectId(id)
+    order_Id=ObjectId(orderId)
 
+    found_admin=collection_name.find_one({"_id":admin_id})
+    if found_admin["role"]!="admin":
+        raise HTTPException(status_code=404, detail="Access Denied")
+    
+    if found_admin is None:
+            raise HTTPException(status_code=404, detail="Admin not found")
+    
+    found_order=collection_name_2.find_one({"_id":order_Id})
+    if found_order is None:
+            raise HTTPException(status_code=404, detail="Order not found")
+    
+    found_order["status"]=status
+    collection_name_2.update_one(
+            {"_id": order_Id},
+            {"$set": {"status": found_order["status"]}})
+        
+    return JSONResponse(status_code=201, content={"message": "Order status updated successfully"})
+
+    
+    
+
+    
+
+
+    
+   
+
+    
