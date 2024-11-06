@@ -118,7 +118,7 @@ async def authenticate_user(name: str = Form(...), password: str = Form(...)):
         
         
         
-        found_user = collection_name.find_one({"name": name})
+        found_user = collection_name.find_one({"name": name,"password":password})
         
         if not found_user:
             raise HTTPException(status_code=401, detail="Invalid username or password")
@@ -291,4 +291,4 @@ async def update_order_status_admin(id:str,orderId:str,status:str):
     
    
 
-    
+  

@@ -23,7 +23,11 @@ export class SignUpComponent {
   isSignedUp: boolean = false;
   errorMsg: string = '';
 
-  constructor(private http: HttpClient, private router: Router, private userService: UserService) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   ////////////////function that sends data to the HTTP /////////////////
   sendDataToServer(userData: any): Observable<any> {
@@ -46,7 +50,13 @@ export class SignUpComponent {
       this.isSignedUp = true;
 
       if (this.isSignedUp) {
-        this.router.navigate(['/user']);
+        if (this.role === 'User') {
+          this.router.navigate(['/user']);
+        } else if (this.role === 'Admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/courier']);
+        }
       }
       this.errorMsg = ''; ///////reset the previous err msg
 
@@ -57,6 +67,14 @@ export class SignUpComponent {
           this.errorMsg = '';
           console.log('SignUp successfully', userData);
           this.userService.setUsername(this.name);
+
+          if (this.role === 'User') {
+            this.router.navigate(['/user']);
+          } else if (this.role === 'Admin') {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/courier']);
+          }
         },
         error: (error) => {
           console.error('Error occurred:', error);
