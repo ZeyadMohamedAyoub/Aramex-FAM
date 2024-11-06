@@ -17,7 +17,8 @@ def individual_serial_order(order)->dict:
         "packageDetails": order["packageDetails"],
         "status": order["status"],
         "deliveryTime": order["deliveryTime"],
-        "userOwner": order["userOwner"]
+        "userOwner": order["userOwner"],
+        "courierId": order["courierId"]
     }
 
 
