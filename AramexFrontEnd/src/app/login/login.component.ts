@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../../user.service'; // Import the service
+import { UserService } from '../../user.service';
 
 
 @Component({
