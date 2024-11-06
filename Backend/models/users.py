@@ -28,4 +28,4 @@ class User(BaseModel):
     password: str
     phone_number: str
     role: RoleEnum
-    orders: List[Order]= []    
+    orders: List[str]= []    

@@ -36,6 +36,18 @@ async def getOrders():
         
         raise HTTPException(status_code=500, detail="An error occurred while fetching orders.")
 
+
+@router.get("/getUserOrders")
+async def get_user_orders(username:str):
+     try:
+          orders= list_serial_order(collection_name_2.find({"userOwner":username}))
+          print(orders)
+          return JSONResponse(status_code=200,content=orders)
+     except Exception as e:
+          print(f"Error occured: {e}")
+          raise HTTPException(status_code=500, detail="An error occurred while fetching orders.")
+
+
 @router.post("/postUser")
 async def post_user(user:User):
     try:
@@ -45,36 +57,45 @@ async def post_user(user:User):
         print(f"Error occurred: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while creating the user.")  
 
-
+'''@router.post("/postOrder")
+async def post_order(order:Order):
+    try:
+        collection_name_2.insert_one(dict(order))
+        return {"message": "Order created successfully"}
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while creating the user.") '''
 
 @router.post("/postOrder")
 async def post_order(order: Order):
     try:
         
-        collection_name_2.insert_one(order.model_dump())
+        result= collection_name_2.insert_one(order.model_dump())
+
+        
+        order_id=str(result.inserted_id)
         
         
         user = collection_name.find_one({"name": order.userOwner})  
         
-       
+        
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
 
         
-        if "orders" not in user:
-            user["orders"] = []  
 
-       
-        user["orders"].append(order.model_dump())
+        
+        user["orders"].append(order_id)
 
         
         print("Updated orders list for user:", user["orders"])
         
-       
+        
         result = collection_name.update_one(
             {"name": order.userOwner},
             {"$set": {"orders": user["orders"]}}
         )
+        
         
         if result.modified_count == 0:
             raise HTTPException(status_code=500, detail="Failed to update user's order list")
@@ -97,7 +118,7 @@ async def authenticate_user(name: str = Form(...), password: str = Form(...)):
         
         
         
-        found_user = collection_name.find_one({"name": name})
+        found_user = collection_name.find_one({"name": name,"password":password})
         
         if not found_user:
             raise HTTPException(status_code=401, detail="Invalid username or password")
@@ -114,3 +135,149 @@ async def authenticate_user(name: str = Form(...), password: str = Form(...)):
         print(f"Error occurred: {e}")
         
         raise HTTPException(status_code=500, detail="An error occurred while authenticating the user.")
+    
+
+@router.put("/addOrder")
+async def add_order_to_courier(id:str,orderID:str):
+    
+    courier_id = ObjectId(id)
+    order_id = ObjectId(orderID)
+    
+    found_courier= collection_name.find_one({"_id":courier_id})
+    if found_courier is None:
+            raise HTTPException(status_code=404, detail="Courier not found")
+    
+    found_order=collection_name_2.find_one({"_id":order_id})
+    result = collection_name_2.update_one(
+            {"_id": order_id},
+            {"$set": {"courierId": id}}
+        )
+
+    
+    found_courier["orders"].append(orderID)
+    
+    result = collection_name.update_one(
+            {"_id": courier_id},
+            {"$set": {"orders": found_courier["orders"]}}
+        )
+    
+    if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to update user's order list")
+
+    return JSONResponse(status_code=201, content={"message": "Order created and added to user's order list successfully"})
+
+
+@router.get("/getCourierOrders")
+async def get_courier_orders(id: str):
+    try:
+        
+        courier_id = ObjectId(id)
+        
+        
+        found_courier = collection_name.find_one({"_id": courier_id})
+
+        
+        if found_courier is None:
+            raise HTTPException(status_code=404, detail="Courier not found")
+        
+        
+        ordersIds = found_courier.get("orders", [])
+
+        orders=[]
+        for order in ordersIds:
+            orders.append(collection_name_2.find_one({"_id":ObjectId(order)}))
+        
+        
+        print(orders)
+        
+        
+        return JSONResponse(status_code=200, content={"orders": orders})
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
+
+
+@router.put("/updateOrderStatus")
+async def update_order_status(id:str,orderId:str,status:str):
+    courier_id=ObjectId(id)
+    order_Id=ObjectId(orderId)
+
+    found_courier=collection_name.find_one({"_id":courier_id})
+    if found_courier["role"]!="courier":
+        raise HTTPException(status_code=404, detail="Access Denied")
+    
+    if found_courier is None:
+            raise HTTPException(status_code=404, detail="Courier not found")
+    
+    found_order=collection_name_2.find_one({"_id":order_Id})
+    if found_order is None:
+            raise HTTPException(status_code=404, detail="Order not found")
+    
+    
+
+    
+    
+
+    isOrder=False
+    for order in found_courier["orders"]:
+            if orderId == order:
+                 isOrder=True
+
+
+    if isOrder:
+         found_order["status"]=status
+         collection_name_2.update_one(
+            {"_id": order_Id},
+            {"$set": {"status": found_order["status"]}}
+        )
+         return JSONResponse(status_code=201, content={"message": "Order status updated successfully"})
+
+    else:
+         raise HTTPException(status_code=404, detail="Order not found in courier's assigned orders")
+                           
+
+@router.delete("/deleteOrder")
+async def delete_order(orderId: str):
+    try:
+        
+        OrderID = ObjectId(orderId)
+        
+        
+        result = collection_name_2.delete_one({"_id": OrderID})
+        
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Order not found")
+        
+        
+        return JSONResponse(status_code=200, content={"message": "Order deleted successfully"})
+    
+
+    except Exception as e:
+        print(f"Error occurred while deleting order: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while deleting the order")
+
+
+                           
+@router.put("/updateOrderStatusAdmin")
+async def update_order_status_admin(id:str,orderId:str,status:str):
+    admin_id=ObjectId(id)
+    order_Id=ObjectId(orderId)
+
+    found_admin=collection_name.find_one({"_id":admin_id})
+    if found_admin["role"]!="admin":
+        raise HTTPException(status_code=404, detail="Access Denied")
+    
+    if found_admin is None:
+            raise HTTPException(status_code=404, detail="Admin not found")
+    
+    found_order=collection_name_2.find_one({"_id":order_Id})
+    if found_order is None:
+            raise HTTPException(status_code=404, detail="Order not found")
+    
+    found_order["status"]=status
+    collection_name_2.update_one(
+            {"_id": order_Id},
+            {"$set": {"status": found_order["status"]}})
+        
+    return JSONResponse(status_code=201, content={"message": "Order status updated successfully"})
