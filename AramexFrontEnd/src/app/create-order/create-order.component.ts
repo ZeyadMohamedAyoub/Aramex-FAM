@@ -17,6 +17,7 @@ export class CreateOrderComponent {
   dropOff_Location: string = '';
   packageDetails: string = '';
   deliveryTime: string = '';
+  courierId: string='';
   isOrderCreated: boolean = false;
   // status: string = '';
   errorMsg: string = '';
@@ -45,6 +46,7 @@ export class CreateOrderComponent {
         status: 'pending', // Set initial status to "pending"
         deliveryTime: this.deliveryTime,
         userOwner: this.userService.getUsername(), //to retrieve and send the username
+        courierId: this.courierId,
       };
       
       // Resetting status messages
@@ -56,6 +58,7 @@ export class CreateOrderComponent {
         next: (response) => {
           if (response.status === 201) { // Assuming 201 for a successful creation
             console.log('Order created successfully:', response);
+            console.log(response.body);
             this.isOrderCreated = true;
             this.errorMsg = '';
             orderForm.reset(); // Clear form after successful submission

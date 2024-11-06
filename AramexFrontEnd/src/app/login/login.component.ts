@@ -54,7 +54,7 @@ export class LoginComponent {
     this.sendDataToServer(this.name, this.password).subscribe({
       next: (response) => {
         if (response.status == 200) {
-          const role = response.body.role;
+          const role = response.body.user.role;
           this.isloggedIn = true;
           console.log('Logged in successfully!', response);
           this.errorMsg = '';
