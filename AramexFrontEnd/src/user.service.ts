@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
-  constructor() { }
+  constructor() {}
 
   private userOwner: string = '';
+  private role: string = '';
 
   setUsername(name: string) {
     this.userOwner = name;
+  }
+
+  setUserRole(role: string) {
+    this.role = role;
   }
 
   getUsername(): string {

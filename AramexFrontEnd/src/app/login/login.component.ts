@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../user.service';
-
 
 @Component({
   selector: 'app-login',
@@ -21,7 +20,11 @@ export class LoginComponent {
   errorMsg: string = ''; //added a error mesg
 
   //injected the userService
-  constructor(private http: HttpClient, private userService: UserService) {}
+  constructor(
+    private http: HttpClient,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   ////////////////function that sends data to the HTTP /////////////////
   sendDataToServer(name: string, password: string): Observable<any> {
@@ -51,10 +54,21 @@ export class LoginComponent {
     this.sendDataToServer(this.name, this.password).subscribe({
       next: (response) => {
         if (response.status == 200) {
+          const role = response.body.role;
           this.isloggedIn = true;
           console.log('Logged in successfully!', response);
           this.errorMsg = '';
           this.userService.setUsername(this.name); //to store the userName
+          this.userService.setUserRole(role);
+
+          if (role === 'user') {
+            this.router.navigate(['/user']);
+          } else if (role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else {
+            //then the user.role is courier
+            this.router.navigate(['/courier']);
+          }
         } else {
           console.error('Invalid username or password');
           this.errorMsg = 'Invalid UserName or Password';
