@@ -17,13 +17,13 @@
 
         <ul class="list-group list-group-flush mb-4">
           <li class="list-group-item">
-            <strong>Order ID:</strong> {{ order.id }}
+            <strong>Order ID:</strong> {{ orderId }}
           </li>
           <li class="list-group-item">
             <strong>Customer:</strong> {{ order.userOwner }}
           </li>
           <li class="list-group-item">
-            <strong>Status:</strong> {{ order.status }}
+            <strong>Status:</strong> {{ selectedStatus }}
           </li>
           <li class="list-group-item">
             <strong>Pick-Up Location:</strong> {{ order.pickUp_Location }}
@@ -63,7 +63,7 @@
           </button>
           <button
             class="btn btn-success"
-            (click)="assignToCourier('courier-id')"
+            (click)="ToAssignationPage()"
           >
             Assign to Courier
           </button>

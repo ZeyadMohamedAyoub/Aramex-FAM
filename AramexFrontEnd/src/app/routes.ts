@@ -10,6 +10,7 @@ import { AllTheOrdersComponent } from './all-the-orders/all-the-orders.component
 import { AssignedOrdersComponent } from './assigned-orders/assigned-orders.component';
 import { CourierHomePageComponent } from './courier-home-page/courier-home-page.component';
 import { AdminOrderViewComponent } from './admin-order-view/admin-order-view.component';
+import { AssignationPageComponent } from './assignation-page/assignation-page.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -21,7 +22,9 @@ export const routes: Routes = [
   { path: 'order/:id', component: UserOrderDetailsComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'allOrders', component: AllTheOrdersComponent },
-  { path: '/assignedOrders', component: AssignedOrdersComponent },
-  { path: '/courier', component: CourierHomePageComponent },
+  { path: 'assignedOrders', component: AssignedOrdersComponent },
+  { path: 'courier', component: CourierHomePageComponent },
   { path: 'admin/orders/:id', component: AdminOrderViewComponent },
+  { path: 'assign' ,component:AssignationPageComponent},
+  { path:'assign-order/:id', component:AssignationPageComponent}
 ];

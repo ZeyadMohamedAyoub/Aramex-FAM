@@ -6,16 +6,29 @@ import { HttpParams } from '@angular/common/http';
   providedIn: 'root',
 })
 export class CourierService {
-  private apiUrl = 'http://127.0.0.1:8000/updateOrderStatus';
+  private apiUrl = 'http://127.0.0.1:8000';
 
   constructor(private http: HttpClient) {}
+
+  private courierName: string='';
+
+  setCourierName(courierName:string){
+    this.courierName=courierName;
+  }
+
+
 
   // fetch orders assigned to a specific courier
   getAssignedOrders(courierId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getCourierOrders`, {
-      params: new HttpParams().set('id', courierId),
+      params: new HttpParams().set('name', this.courierName),
     });
   }
+
+ assignOrderToCourier(){
+  
+
+ }
 
   // update the status of an order by courier
   updateOrderStatus(
