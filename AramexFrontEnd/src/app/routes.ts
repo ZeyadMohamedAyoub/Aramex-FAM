@@ -25,6 +25,6 @@ export const routes: Routes = [
   { path: 'assignedOrders', component: AssignedOrdersComponent },
   { path: 'courier', component: CourierHomePageComponent },
   { path: 'admin/orders/:id', component: AdminOrderViewComponent },
-  { path: 'assign' ,component:AssignationPageComponent},
-  { path:'assign-order/:id', component:AssignationPageComponent}
+  //{ path: 'assign' ,component:AssignationPageComponent},
+  { path:'assign-order/:id', component:AssignationPageComponent},//fixed
 ];
