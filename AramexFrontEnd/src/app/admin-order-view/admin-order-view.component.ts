@@ -66,12 +66,7 @@ export class AdminOrderViewComponent implements OnInit {
     }
   }
 
-  assignToCourier(courierId: string) {
-    this.http
-      .put(`http://127.0.0.1:8000/orders/${this.orderId}`, { courierId })
-      .subscribe({
-        next: () => alert('Order assigned to courier successfully'),
-        error: (error) => console.error('Error assigning courier:', error),
-      });
+  ToAssignationPage() {
+    this.router.navigate(['/assign']);
   }
 }
