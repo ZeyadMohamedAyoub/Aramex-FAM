@@ -1,0 +1,74 @@
+<div class="px-4 py-5 my-5 text-center">
+  <img
+    class="d-block mx-auto mb-4"
+    src="https://iconape.com/wp-content/files/mw/373764/svg/373764.png"
+    alt="Orders Icon"
+    width="72"
+    height="57"
+  />
+  <h1 class="display-5 fw-bold text-body-emphasis">Order Details</h1>
+</div>
+
+<div class="container col-xl-8 col-lg-10 px-4 py-5 mx-auto">
+  <div class="row align-items-center g-5">
+    <div class="col-12">
+      <div class="order-details card p-4 shadow-sm">
+        <h2 class="card-title mb-3">Order Information</h2>
+
+        <ul class="list-group list-group-flush mb-4">
+          <li class="list-group-item">
+            <strong>Order ID:</strong> {{ orderId }}
+          </li>
+          <li class="list-group-item">
+            <strong>Customer:</strong> {{ order.userOwner }}
+          </li>
+          <li class="list-group-item">
+            <strong>Status:</strong> {{ selectedStatus }}
+          </li>
+          <li class="list-group-item">
+            <strong>Pick-Up Location:</strong> {{ order.pickUp_Location }}
+          </li>
+          <li class="list-group-item">
+            <strong>Drop-Off Location:</strong> {{ order.dropOff_Location }}
+          </li>
+          <li class="list-group-item">
+            <strong>Delivery Time:</strong> {{ order.deliveryTime }}
+          </li>
+          <li class="list-group-item">
+            <strong>Package Details:</strong> {{ order.packageDetails }}
+          </li>
+        </ul>
+
+        <div class="status-update mb-4">
+          <label for="status" class="form-label fw-semibold"
+            >Update Status:</label
+          >
+          <select
+            [(ngModel)]="selectedStatus"
+            id="status"
+            class="form-select mb-3"
+          >
+            <option *ngFor="let status of statuses" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+          <button class="btn btn-primary" (click)="updateOrderStatus()">
+            Update Status
+          </button>
+        </div>
+
+        <div class="actions d-flex gap-3">
+          <button class="btn btn-danger" (click)="deleteOrder()">
+            Delete Order
+          </button>
+          <button
+            class="btn btn-success"
+            (click)="ToAssignationPage()"
+          >
+            Assign to Courier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
