@@ -3,14 +3,10 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-
 class RoleEnum(str, Enum):
     admin = "admin"
     user = "user"
     courier = "courier"
-
-
-
 
 
 class Order(BaseModel): 
