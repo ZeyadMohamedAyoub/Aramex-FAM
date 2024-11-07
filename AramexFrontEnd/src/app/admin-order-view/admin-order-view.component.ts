@@ -28,7 +28,7 @@ export class AdminOrderViewComponent implements OnInit {
   ngOnInit(): void {
     this.orderId = this.route.snapshot.paramMap.get('id')!;
     this.fetchOrderDetails();
-    console.log(this.orderId)
+    console.log(this.orderId);
   }
 
   fetchOrderDetails() {
@@ -68,6 +68,6 @@ export class AdminOrderViewComponent implements OnInit {
   }
 
   ToAssignationPage() {
-    this.router.navigate(['assign-order',this.orderId]);//fixed
+    this.router.navigate(['assign-order', this.orderId]);
   }
 }
