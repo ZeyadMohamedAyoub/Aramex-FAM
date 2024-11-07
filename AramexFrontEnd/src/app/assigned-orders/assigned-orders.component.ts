@@ -3,6 +3,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CourierService } from '../courier-service/courier.service';
+import { UserService } from '../../user.service';
 
 
 @Component({
@@ -14,45 +15,61 @@ import { CourierService } from '../courier-service/courier.service';
 })
 export class AssignedOrdersComponent implements OnInit {
   assignedOrders: any[] = [];
-  //@Shehabenani !!!!!!important make it like the user service so i want to trace and get the id of the courier after he logs in
-  courierId = 'get the id'; //implement it in the courier-service like we did in userOwner 
-  // na b2ol n7otaha fel url zai ma 3mlna fel orderId l3al ashraf iwafek
+  courierName: string = '';
+  courierId: string = '';
+  errorMsg: string = '';
+  successMsg: string = '';
+  statuses: string[] = ['picked up', 'in transit', 'delivered']; //to implement onstatus change
 
-  constructor(private courierService: CourierService) {}
+//userService to get the user id
+  constructor(private courierService: CourierService, private userService: UserService) {}
 
   ngOnInit(): void {
-    this.loadAssignedOrders();
+    this.courierName = this.userService.getUsername();
+    this.fetchAssignedOrders();
   }
-
-  loadAssignedOrders() {
-    this.courierService.getAssignedOrders(this.courierId).subscribe(
-      (response) => {
+//to get the assigned orders from the courier service
+  fetchAssignedOrders() {
+    this.courierService.getAssignedOrders(this.courierName).subscribe({
+      next: (response) => {
         this.assignedOrders = response.orders;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error loading assigned orders:', error);
+        this.errorMsg = 'Failed to load assigned orders';
       }
-    );
+    });
   }
 
-  // Function to accept an order
+  //when the courier accepts the order trigger this function from the courier service
   acceptOrder(orderId: string) {
     this.updateOrderStatus(orderId, 'accepted');
   }
 
-  // Function to decline an order
   declineOrder(orderId: string) {
     this.updateOrderStatus(orderId, 'declined');
   }
 
+//to update the order status
   private updateOrderStatus(orderId: string, status: string) {
-    this.courierService.updateOrderStatus(this.courierId, orderId, status).subscribe(
-      () => {
-        this.loadAssignedOrders(); // Refresh the list
+    //get the user id from the user service storred when the user logs in
+    this.courierId = this.userService.getUserId(); //was set in the login component and got from the user-service
+    this.courierService.updateOrderStatus(this.courierId, orderId, status).subscribe({
+      next: (response) => {
+        this.successMsg = 'Order status updated successfully';
+        this.errorMsg = '';
+        this.fetchAssignedOrders();// to refresh the list
       },
-      (error) => {
+      error: (error) => {
         console.error('Error updating order status:', error);
+        this.errorMsg = 'Failed to update order status';
+        this.successMsg = '';
       }
-    );
+    });
+  }
+
+  //to implement onstatus change from ui dropdown
+  onStatusChange(orderId: any, newStatus: string) {
+    this.updateOrderStatus(orderId, newStatus);
   }
 }

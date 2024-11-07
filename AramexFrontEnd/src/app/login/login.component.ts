@@ -52,14 +52,21 @@ export class LoginComponent {
     console.log('Attempting to log in:', userData);
 
     this.sendDataToServer(this.name, this.password).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response.status == 200) {
-          const role = response.body.user.role;
+          // const role = response.body.user.role;
+          //@shehabenani i added the user id to the user service
+          const user = response.body.user;
+          const role = user.role;
+          const userId = user.id;
+
           this.isloggedIn = true;
           console.log('Logged in successfully!', response);
           this.errorMsg = '';
           this.userService.setUsername(this.name); //to store the userName
           this.userService.setUserRole(role);
+          //setting  user id for the courier service
+          this.userService.setUserId(userId);
 
           if (role === 'user') {
             this.router.navigate(['/user']);
