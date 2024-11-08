@@ -11,14 +11,21 @@
       <p>
         <strong>Pickup Location:</strong> {{ orderDetails.pickUp_Location }}
       </p>
-       <p>
+      <p>
         <strong>Drop-off Location:</strong> {{ orderDetails.dropOff_Location }}
-      </p> 
+      </p>
       <p><strong>Package Details:</strong> {{ orderDetails.packageDetails }}</p>
       <p><strong>Delivery Time:</strong> {{ orderDetails.deliveryTime }}</p>
       <p>
-        <strong>Courier Info:</strong> {{ orderDetails.courierInfo || "N/A" }}
+        <strong>Courier Info:</strong>
       </p>
+      <div *ngIf="courierInfo; else noCourier">
+        <p><strong>Courier Name:</strong> {{ courierInfo.name }}</p>
+        <p><strong>Phone Number:</strong> {{ courierInfo.phone_number }}</p>
+      </div>
+      <ng-template #noCourier>
+        <p>N/A</p>
+      </ng-template>
       <button
         *ngIf="orderDetails.status === 'pending'"
         class="btn btn-danger w-100 py-2 mt-3"

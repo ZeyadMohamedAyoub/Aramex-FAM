@@ -55,8 +55,8 @@ export class AdminOrderViewComponent implements OnInit {
     if (this.selectedStatus) {
       this.http
         .put(
-          `http://127.0.0.1:8000/updateOrderStatusAdmin/${this.orderId}/status`,
-          { status: this.selectedStatus }
+          `http://127.0.0.1:8000/updateOrderStatusAdmin/${this.orderId}/${this.selectedStatus}`,
+          {}
         )
         .subscribe({
           next: () => alert('Order status updated successfully'),

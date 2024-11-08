@@ -5,7 +5,7 @@ from config.database import collection_name,collection_name_2
 from schema.schemas import list_serial, individual_serial,list_serial_order,individual_serial_order
 from bson import ObjectId
 from fastapi import HTTPException
-import bcrypt
+
 
 
 
@@ -50,6 +50,22 @@ async def getOrders(orderId:str):
         print(f"Error occurred: {e}")
         
         raise HTTPException(status_code=500, detail="An error occurred while fetching orders.")
+
+#@ShehabEnani => added this one to get a user according to their id 
+# To print the Courier Info in the user order details     
+@router.get("/users/{userId}")
+async def get_user(userId: str):
+    try:
+        user = collection_name.find_one({"_id": ObjectId(userId)})
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        user_data = individual_serial(user)  # This will format the user data as needed
+        return JSONResponse(status_code=200, content=user_data)
+    except Exception as e:
+        print(f"Error occurred while fetching user: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while fetching the user")
+
 
 @router.get("/getUserOrders")
 async def get_user_orders(username:str):
