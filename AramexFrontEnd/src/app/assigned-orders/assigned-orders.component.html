@@ -1,13 +1,53 @@
-<div class="assigned-orders">
-  <h2>Assigned Orders</h2>
-  <ul *ngIf="assignedOrders.length > 0; else noOrders">
-    <li *ngFor="let order of assignedOrders">
-      <p>Order ID: {{ order._id }}</p>
-      <p>Status: {{ order.status }}</p>
-      <button (click)="acceptOrder(order._id)">Accept</button>
-      <button (click)="declineOrder(order._id)">Decline</button>
-    </li>
-  </ul>
+<div class="assigned-orders container mt-4">
+  <h2 class="mb-4">Assigned Orders</h2>
+
+  <div *ngIf="errorMsg" class="alert alert-danger">
+    {{ errorMsg }}
+  </div>
+
+  <div *ngIf="successMsg" class="alert alert-success">
+    {{ successMsg }}
+  </div>
+
+  <div *ngIf="assignedOrders.length > 0; else noOrders">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Status</th>
+          <th>Pickup Location</th>
+          <th>Drop-off Location</th>
+          <th>Delivery Time</th>
+          <th>Update Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of assignedOrders">
+          <td>{{ order._id }}</td>
+          <td>{{ order.status }}</td>
+          <td>{{ order.pickUp_Location }}</td>
+          <td>{{ order.dropOff_Location }}</td>
+          <td>{{ order.deliveryTime }}</td>
+          <td>
+            <div class="input-group">
+              <select
+                class="form-select form-select-sm"
+                [(ngModel)]="order.newStatus"
+                (change)="onStatusChange(order._id, order.newStatus)"
+              >
+                <!-- to select the status from the dropdown and call the onStatusChange function-->
+                <option value="" disabled selected>Select Status</option>
+                <option *ngFor="let status of statuses" [value]="status">
+                  {{ status }}
+                </option>
+              </select>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <ng-template #noOrders>
     <p>No assigned orders.</p>
   </ng-template>
