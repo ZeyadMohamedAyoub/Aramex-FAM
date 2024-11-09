@@ -18,29 +18,36 @@
           <th>Pickup Location</th>
           <th>Drop-off Location</th>
           <th>Delivery Time</th>
-          <th>Update Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let order of assignedOrders">
+        <tr *ngFor="let order of assignedOrders; trackBy: trackByOrderId">
           <td>{{ order._id }}</td>
           <td>{{ order.status }}</td>
           <td>{{ order.pickUp_Location }}</td>
           <td>{{ order.dropOff_Location }}</td>
           <td>{{ order.deliveryTime }}</td>
           <td>
-            <div class="input-group">
-              <select
-                class="form-select form-select-sm"
-                [(ngModel)]="order.newStatus"
-                (change)="onStatusChange(order._id, order.newStatus)"
-              >
-                <!-- to select the status from the dropdown and call the onStatusChange function-->
-                <option value="" disabled selected>Select Status</option>
-                <option *ngFor="let status of statuses" [value]="status">
-                  {{ status }}
-                </option>
-              </select>
+            
+            <div *ngIf="order.status === 'pending'">
+              <button class="btn btn-success btn-sm me-2" (click)="acceptOrder(order._id)">Accept</button>
+              <button class="btn btn-danger btn-sm" (click)="declineOrder(order._id)">Decline</button>
+            </div>
+           
+            <div *ngIf="order.status !== 'pending'">
+              <div class="input-group">
+                <select
+                  class="form-select form-select-sm"
+                  [(ngModel)]="order.newStatus"
+                  (change)="onStatusChange(order._id, order.newStatus)"
+                >
+                  <option value="" disabled>Select Status</option>
+                  <option *ngFor="let status of statuses" [value]="status">
+                    {{ status }}
+                  </option>
+                </select>
+              </div>
             </div>
           </td>
         </tr>

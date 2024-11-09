@@ -8,7 +8,6 @@ from fastapi import HTTPException
 
 
 
-
 router = APIRouter()
 
 
@@ -176,12 +175,94 @@ async def add_order_to_courier(name:str,orderID:str):
         {"$set": {"orders": found_courier["orders"]}}
     )
     
-    
     if result.modified_count == 0:
         raise HTTPException(status_code=500, detail="Failed to update user's order list")
 
     return JSONResponse(status_code=201, content={"message": "Order assigned to courier successfully"})
 
+
+#solved last bug so it changes instead of duplicating
+@router.put("/acceptOrder/{courierId}/{orderId}")
+async def accept_order(courierId: str, orderId: str):
+    try:
+        #convert to ObjectId
+        courier_obj_id = ObjectId(courierId)
+        order_obj_id = ObjectId(orderId)
+
+        #find the courier
+        courier = collection_name.find_one({"_id": courier_obj_id, "role": "courier"})
+        if not courier:
+            raise HTTPException(status_code=404, detail="Courier not found")
+
+        #find the order
+        order = collection_name_2.find_one({"_id": order_obj_id})
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+
+        if order.get("status") != "pending":
+            raise HTTPException(status_code=400, detail="Order is not pending")
+        
+        update_result = collection_name_2.update_one(
+            {"_id": ObjectId(orderId), "status": "pending"},
+            {"$set": {"status": "accepted"}} #accepted 
+        )
+        
+        if update_result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to accept the order")
+
+        #assign the courier to the order
+        collection_name_2.update_one(
+            {"_id": order_obj_id},
+            {"$set": {"courierId": courierId}}
+        )
+
+        #add the order id to the courier's orders list without duplicating as using "set"
+        collection_name.update_one(
+            {"_id": courier_obj_id},
+            {"$addToSet": {"orders": orderId}}
+        )
+
+        return JSONResponse(status_code=200, content={"message": "Order accepted successfully"})
+    
+    except Exception as e:
+        print(f"Error in accept_order: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while accepting the order")
+    
+@router.put("/declineOrder/{courierId}/{orderId}")
+async def decline_order(courierId: str, orderId: str):
+    try:
+        courier_obj_id = ObjectId(courierId)
+        order_obj_id = ObjectId(orderId)
+
+        courier = collection_name.find_one({"_id": courier_obj_id, "role": "courier"})
+        if not courier:
+            raise HTTPException(status_code=404, detail="Courier not found")
+
+        #collection_name_2 is the orders collection
+        order = collection_name_2.find_one({"_id": order_obj_id})
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found or not assigned to this courier")
+        if order.get("status") != "pending":
+            raise HTTPException(status_code=400, detail="Order is not pending")
+        
+        update_result = collection_name_2.update_one(
+            {"_id": order_obj_id, "courierId": courierId},
+            {"$unset": {"courierId": ""}, "$set": {"status": "pending"}} #solved decline failed bug
+        )
+
+        if update_result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to decline the order")
+
+        collection_name.update_one(
+            {"_id": courier_obj_id},
+            {"$pull": {"orders": orderId}}
+        )
+
+        return JSONResponse(status_code=200, content={"message": "Order declined successfully"})
+    
+    except Exception as e:
+        print(f"Error in decline_order: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while declining the order")
 
 #this route is for the courier to get his assigned orders
 @router.get("/getCourierOrders")
@@ -201,7 +282,7 @@ async def get_courier_orders(name: str):
             order = collection_name_2.find_one({"_id": ObjectId(order_id)})
             if order:
                 order["_id"] = str(order["_id"])
-                order["courierId"]=str(order["courierId"])  
+                order["courierId"]=str(order["courierId"]) if "courierId" in order else None
                 orders.append(order)
 
         print(orders)                
@@ -209,39 +290,6 @@ async def get_courier_orders(name: str):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
-
-#this route is for the courier to update the status of his assigned orders
-# @router.put("/updateOrderStatus")
-# # async def update_order_status(id:str,orderId:str,status:str):
-# #     courier_id=ObjectId(id)
-# #     order_Id=ObjectId(orderId)
-
-# #     found_courier=collection_name.find_one({"_id":courier_id})
-# #     if found_courier["role"]!="courier":
-# #         raise HTTPException(status_code=404, detail="Access Denied")
-    
-# #     if found_courier is None:
-# #             raise HTTPException(status_code=404, detail="Courier not found")
-    
-# #     found_order=collection_name_2.find_one({"_id":order_Id})
-# #     if found_order is None:
-# #             raise HTTPException(status_code=404, detail="Order not found")
-    
-# #     isOrder=False
-# #     for order in found_courier["orders"]:
-# #             if orderId == order:
-# #                  isOrder=True
-
-# #     if isOrder:
-# #          found_order["status"]=status
-# #          collection_name_2.update_one(
-# #             {"_id": order_Id},
-# #             {"$set": {"status": found_order["status"]}}
-# #         )
-# #          return JSONResponse(status_code=201, content={"message": "Order status updated successfully"})
-
-# #     else:
-# #          raise HTTPException(status_code=404, detail="Order not found in courier's assigned orders")
 
 # @ashraf i commented out your code for the update 
 # order status because i want to make it like the user service
