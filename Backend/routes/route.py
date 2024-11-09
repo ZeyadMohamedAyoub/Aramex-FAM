@@ -247,7 +247,7 @@ async def decline_order(courierId: str, orderId: str):
         
         update_result = collection_name_2.update_one(
             {"_id": order_obj_id, "courierId": courierId},
-            {"$unset": {"courierId": ""}, "$set": {"status": "pending"}} #solved decline failed bug
+            {"$set": {"courierId": None, "status": "pending"}} #solved decline failed bug
         )
 
         if update_result.modified_count == 0:
