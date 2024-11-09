@@ -1,0 +1,22 @@
+# Ignore compiled bytecode files
+*.pyc
+*.pyo
+_pycache_/
+
+# Ignore virtual environment folder
+venv/
+.env/
+.venv/
+
+# Ignore binary files and temporary files
+*.bin
+*.bak
+*.swp
+
+# Ignore configuration backup files
+*.cfg
+*.log
+
+# Other Python-related ignores
+*.egg-info/
+*.eggs/
