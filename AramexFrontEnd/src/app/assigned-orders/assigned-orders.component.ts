@@ -5,7 +5,6 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { CourierService } from '../courier-service/courier.service';
 import { UserService } from '../../user.service';
 
-
 @Component({
   selector: 'app-assigned-orders',
   standalone: true,
@@ -19,20 +18,26 @@ export class AssignedOrdersComponent implements OnInit {
   courierId: string = '';
   errorMsg: string = '';
   successMsg: string = '';
-  statuses: string[] = ['picked up', 'in transit', 'delivered']; //to implement onstatus change
+  statuses: string[] = ['accepted', 'picked up', 'in transit', 'delivered', 'cancelled'];
 
-//userService to get the user id
   constructor(private courierService: CourierService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.courierName = this.userService.getUsername();
+    this.courierId = this.userService.getUserId();
     this.fetchAssignedOrders();
   }
-//to get the assigned orders from the courier service
+
   fetchAssignedOrders() {
     this.courierService.getAssignedOrders(this.courierName).subscribe({
       next: (response) => {
-        this.assignedOrders = response.orders;
+        //double checking for duplicates handling and i solved it in the backend
+        const uniqueOrdersMap = new Map<string, any>();
+        response.orders.forEach((order: any) => {
+          uniqueOrdersMap.set(order._id, { ...order, newStatus: order.status });
+        });
+        this.assignedOrders = Array.from(uniqueOrdersMap.values());
+        console.log(this.assignedOrders);
       },
       error: (error) => {
         console.error('Error loading assigned orders:', error);
@@ -41,24 +46,42 @@ export class AssignedOrdersComponent implements OnInit {
     });
   }
 
-  //when the courier accepts the order trigger this function from the courier service
   acceptOrder(orderId: string) {
-    this.updateOrderStatus(orderId, 'accepted');
+    this.courierService.acceptOrder(this.courierId, orderId).subscribe({
+      next: (response) => {
+        this.successMsg = 'Order accepted successfully';
+        this.errorMsg = '';
+        this.fetchAssignedOrders();
+      },
+      error: (error) => {
+        console.error('Error accepting order:', error);
+        this.errorMsg = 'Failed to accept order';
+        this.successMsg = '';
+      }
+    });
   }
 
   declineOrder(orderId: string) {
-    this.updateOrderStatus(orderId, 'declined');
+    this.courierService.declineOrder(this.courierId, orderId).subscribe({
+      next: (response) => {
+        this.successMsg = 'Order declined successfully';
+        this.errorMsg = '';
+        this.fetchAssignedOrders();
+      },
+      error: (error) => {
+        console.error('Error declining order:', error);
+        this.errorMsg = 'Failed to decline order';
+        this.successMsg = '';
+      }
+    });
   }
 
-//to update the order status
   private updateOrderStatus(orderId: string, status: string) {
-    //get the user id from the user service storred when the user logs in
-    this.courierId = this.userService.getUserId(); //was set in the login component and got from the user-service
     this.courierService.updateOrderStatus(this.courierId, orderId, status).subscribe({
       next: (response) => {
         this.successMsg = 'Order status updated successfully';
         this.errorMsg = '';
-        this.fetchAssignedOrders();// to refresh the list
+        this.fetchAssignedOrders();
       },
       error: (error) => {
         console.error('Error updating order status:', error);
@@ -68,8 +91,11 @@ export class AssignedOrdersComponent implements OnInit {
     });
   }
 
-  //to implement onstatus change from ui dropdown
   onStatusChange(orderId: any, newStatus: string) {
     this.updateOrderStatus(orderId, newStatus);
+  }
+  
+  trackByOrderId(index: number, order: any): string {
+    return order._id;
   }
 }

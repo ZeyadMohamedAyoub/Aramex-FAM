@@ -8,7 +8,6 @@ class RoleEnum(str, Enum):
     user = "user"
     courier = "courier"
 
-
 class Order(BaseModel): 
     pickUp_Location: str
     dropOff_Location: str

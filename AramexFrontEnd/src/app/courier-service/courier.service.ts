@@ -11,12 +11,19 @@ export class CourierService {
   constructor(private http: HttpClient) {}
 
  
-
-  // sending the name of the courier to the backend to get his assigned orders
   getAssignedOrders(name: string): Observable<any> {
     const params = new HttpParams().set('name', name);
     return this.http.get(`${this.apiUrl}/getCourierOrders`, { params });
-  } 
+  }
+
+
+  acceptOrder(courierId: string, orderId: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/acceptOrder/${courierId}/${orderId}`, {});
+  }
+
+  declineOrder(courierId: string, orderId: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/declineOrder/${courierId}/${orderId}`, {});
+  }
 
   updateOrderStatus(courierId: string, orderId: string, status: string): Observable<any> {
     const params = new HttpParams()
