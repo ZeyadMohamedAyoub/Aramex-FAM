@@ -21,11 +21,16 @@ app.add_middleware(
 )
 
 
-
+import os
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
 
-uri = "mongodb+srv://mohamedsolimanfcai:Ashraf_123@aramex.6k45j.mongodb.net/?retryWrites=true&w=majority&appName=Aramex"
+load_dotenv()  #loading environment variables from .env file
+
+MONGO_URL = os.getenv("MONGO_URL")
+
+uri = MONGO_URL
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 
