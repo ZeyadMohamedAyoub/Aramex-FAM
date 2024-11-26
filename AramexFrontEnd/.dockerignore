@@ -1,0 +1,61 @@
+# Dependency directories
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build output
+dist
+out
+build
+
+# Version control
+.git
+.gitignore
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage
+.nyc_output
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+tmp
+temp
+
+# Angular specific
+.angular
+e2e
+src//*.spec.ts
+
+# Miscellaneous
+*.seed
+*.pid
+*.pid.lock

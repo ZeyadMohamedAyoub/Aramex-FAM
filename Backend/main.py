@@ -8,7 +8,7 @@ from routes.route import router
 app.include_router(router)
 
 origins = [
-    "http://localhost:4200",  
+    "*",  
 ]
 
 
