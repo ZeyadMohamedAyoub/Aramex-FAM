@@ -1,7 +1,11 @@
+import os
 from pymongo import MongoClient
+from dotenv import load_dotenv
 
+load_dotenv()  #loading environment variables from .env file
 
-client = MongoClient("mongodb+srv://mohamedsolimanfcai:Ashraf_123@aramex.6k45j.mongodb.net/?retryWrites=true&w=majority&appName=Aramex")
+MONGO_URL = os.getenv("MONGO_URL")
+client = MongoClient(MONGO_URL)
 
 db = client.user_db
 
