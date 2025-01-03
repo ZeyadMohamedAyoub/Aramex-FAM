@@ -2,7 +2,7 @@ FROM node:20 AS build
 
 WORKDIR /app
 
-RUN apk update && apk add --no-cache git python
+RUN apt-get update && apt-get install -y git python3
 
 COPY package*.json ./
 
