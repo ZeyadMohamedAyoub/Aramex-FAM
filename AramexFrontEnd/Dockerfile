@@ -2,13 +2,17 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+RUN apk update && apk add --no-cache git python
+
 COPY package*.json ./
 
 RUN npm install
 
 COPY . .
 
-RUN npm run build --prod
+RUN npm run build --prod --verbose > build.log 2>&1 && cp build.log /app/build.log
+
+RUN grep -i "error" /app/build.log && exit 1 || exit 0
 
 FROM nginx:latest
 
